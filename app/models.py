@@ -23,15 +23,20 @@ class User(db.Model):
     def get_or_create(cls, slack_id, slack_channel_id):
         """Get or create a user."""
         # check if user exists
-        user = cls.query.get(slack_id)
+        user = cls.get(slack_id)
         if user:
             return user
 
         # make a new user and add it.
         user = cls(slack_id=slack_id, slack_channel_id=slack_channel_id)
-        db.session.add(new_user)
+        db.session.add(user)
         db.session.commit()
         return user
+
+    @classmethod
+    def get(cls, slack_id):
+        """Get a user from their slack_id."""
+        return cls.query.filter_by(slack_id=slack_id).first()
 
     def message(self, text=None, **kwargs):
         """Quick wrapper to send a slack message to the user."""

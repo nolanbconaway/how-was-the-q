@@ -66,7 +66,7 @@ def message_handler(event_data):
     # SIGNUP HANDLER: check for signup text
     # behind the scenes the user will be signed up.
     if any(x == message for x in ('signup', 'register', 'setup')):
-        user = User.query.get(slack_user_id)
+        user = User.get(slack_user_id)
         if not user:
             user = User.get_or_create(slack_user_id, slack_channel_id)
             user.message('Ok! I signed you up.')
