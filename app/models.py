@@ -8,7 +8,8 @@ class User(db.Model):
 
     __tablename__ = 'users'
 
-    slack_id = db.Column(db.String(50), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
+    slack_id = db.Column(db.String(50), unique=True, nullable=False)
     slack_channel_id = db.Column(db.String(50), unique=True, nullable=False)
     signup_dttm = db.Column(
         db.DateTime,
@@ -19,15 +20,15 @@ class User(db.Model):
     ratings = db.relationship('Rating', backref='user')
 
     @classmethod
-    def get_or_create(cls, slack_user_id, slack_channel_id):
+    def get_or_create(cls, slack_id, slack_channel_id):
         """Get or create a user."""
         # check if user exists
-        user = cls.query.get(slack_user_id)
+        user = cls.query.get(slack_id)
         if user:
             return user
 
         # make a new user and add it.
-        user = cls(slack_id=slack_user_id, slack_channel_id=slack_channel_id)
+        user = cls(slack_id=slack_id, slack_channel_id=slack_channel_id)
         db.session.add(new_user)
         db.session.commit()
         return user
@@ -92,8 +93,4 @@ class Rating(db.Model):
         default=datetime.datetime.utcnow
     )
     rating = db.Column(db.String(50), nullable=False)
-    user_slack_id = db.Column(
-        db.String(50),
-        db.ForeignKey('users.slack_id'),
-        nullable=False
-    )
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
