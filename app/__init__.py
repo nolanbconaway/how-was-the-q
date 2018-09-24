@@ -66,6 +66,10 @@ def message_handler(event_data):
     # get user object
     user = User.get_or_create(slack_user_id, slack_channel_id)
 
+    # WAKEUP HANDLER: do nothing, just wake up the heroku
+    if any(x == message for x in ('wakeup', 'wake up')):
+        return
+
     # SIGNUP HANDLER: check for signup text
     # behind the scenes the user will be signed up.
     if any(x == message for x in ('signup', 'register', 'setup')):
