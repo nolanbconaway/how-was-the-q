@@ -150,9 +150,7 @@ def interact():
 
         # get user object, append rating
         user = User.get_or_create(user_slack_id, slack_channel_id)
-        user.ratings.append(
-            Rating(rating=response, user_slack_id=user_slack_id)
-        )
+        user.ratings.append(Rating(rating=response))
         db.session.commit()
 
         if response == 'bad':
