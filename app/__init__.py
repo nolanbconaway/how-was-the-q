@@ -63,17 +63,22 @@ def message_handler(event_data):
     slack_user_id = event_data['event']['user']
     slack_channel_id = event_data['event']['channel']
 
-    # get user object
+    # SIGNUP HANDLER: check for signup text
+    # behind the scenes the user will be signed up.
+    if any(x == message for x in ('signup', 'register', 'setup')):
+        user = User.query.get(slack_user_id)
+        if not user:
+            user = User.get_or_create(slack_user_id, slack_channel_id)
+            user.message('Ok! I signed you up.')
+        else:
+            user.message('You\'re already signed up.')
+        return
+
+    # get user object for remaining handlers.
     user = User.get_or_create(slack_user_id, slack_channel_id)
 
     # WAKEUP HANDLER: do nothing, just wake up the heroku
     if any(x == message for x in ('wakeup', 'wake up')):
-        return
-
-    # SIGNUP HANDLER: check for signup text
-    # behind the scenes the user will be signed up.
-    if any(x == message for x in ('signup', 'register', 'setup')):
-        new_user.message('Ok! I signed you up.')
         return
 
     # ENABLE HANDLER: Set the enabled flag to true.

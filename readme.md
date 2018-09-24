@@ -30,11 +30,7 @@ day the bot asks me how my train ride was, and that's my training data.
 
 ## TODO
 
-1. Schedule asks
-2. Database diagram endpoint
-3. Deploy on heroku
-
-### Places to set the URL once we're on heroku:
-
-1. event subscriptions
-2. interactive components
+1. Schedule asks.
+2. Database diagram endpoint.
+3. Get data as csv handler.
+4. backup system.
