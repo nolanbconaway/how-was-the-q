@@ -30,11 +30,9 @@ day the bot asks me how my train ride was, and that's my training data.
 
 ## TODO
 
-1. Schedule asks.
-2. Database diagram endpoint.
-3. Get data as csv handler.
-4. backup system.
-5. help handler
-6. Fix messages from repeat-sending? IDK whats happening here.
-7. These handlers I am writing in one mega response-handler function seem like
-shell commands. Maybe they should be slash commands like `/q ask`
+- [x] Schedule asks.
+- [ ] Fix messages from repeat-sending? IDK whats happening here.
+- [ ] Backup system.
+- [ ] Message handlers should be slash commands like `/q ask`.
+- [ ] New handlers: Get data as csv, help.
+- [ ] Constraints on time and number of ratings per day.

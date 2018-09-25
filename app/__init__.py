@@ -11,14 +11,17 @@ from slackclient import SlackClient
 from flask import Flask
 from flask import jsonify
 from flask import request
+from werkzeug.exceptions import BadRequest
 
 # flask extensions
 from flask_sqlalchemy import SQLAlchemy
-
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 # tokens
 SLACK_BOT_OAUTH_ACCESS_TOKEN = os.getenv('SLACK_BOT_OAUTH_ACCESS_TOKEN')
 SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI')
+SECRET_PASSWORD = os.getenv('SECRET_PASSWORD')
 
 # init vars
 app = Flask(__name__)
@@ -28,6 +31,7 @@ slack_client = SlackClient(SLACK_BOT_OAUTH_ACCESS_TOKEN)
 app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+limiter = Limiter(app, key_func=get_remote_address)
 
 # within app imports
 from app.models import Rating, User
@@ -63,23 +67,19 @@ def message_handler(event_data):
     slack_user_id = event_data['event']['user']
     slack_channel_id = event_data['event']['channel']
 
-    # SIGNUP HANDLER: check for signup text
-    # behind the scenes the user will be signed up.
-    if any(x == message for x in ('signup', 'register', 'setup')):
+    # DISABLE HANDLER: Set the enabled flag to false.
+    if any(x == message for x in ('stop', 'disable')):
         user = User.get(slack_user_id)
-        if not user:
-            user = User.get_or_create(slack_user_id, slack_channel_id)
-            user.message('Ok! I signed you up.')
-        else:
-            user.message('You\'re already signed up.')
+        if not user or not user.enabled:
+            user.message('You\'re not getting Q train messages as-is...')
+            return
+        user.enabled = False
+        db.session.commit()
+        user.message('Ok! I\'ll stop asking you about the Q train.')
         return
 
     # get user object for remaining handlers.
     user = User.get_or_create(slack_user_id, slack_channel_id)
-
-    # WAKEUP HANDLER: do nothing, just wake up the heroku
-    if any(x == message for x in ('wakeup', 'wake up')):
-        return
 
     # ENABLE HANDLER: Set the enabled flag to true.
     if any(x == message for x in ('start', 'enable')):
@@ -89,16 +89,6 @@ def message_handler(event_data):
         user.enabled = True
         db.session.commit()
         user.message('Ok! I\'ll start asking you about the Q train.')
-        return
-
-    # DISABLE HANDLER: Set the enabled flag to false.
-    if any(x == message for x in ('stop', 'disable')):
-        if not user.enabled:
-            user.message('You\'re not getting Q train messages as-is...')
-            return
-        user.enabled = False
-        db.session.commit()
-        user.message('Ok! I\'ll stop asking you about the Q train.')
         return
 
     # ASK HANDLER: see if the user wants the question
@@ -162,3 +152,25 @@ def interact():
 
     # otherwise do nothing
     return('OK')
+
+
+@limiter.limit("2 per minute")
+@app.route('/ask-all', methods=['POST'])
+def ask_all():
+    """Send asks to all enabled users if form data matches a secret."""
+    # get POST form data, validate
+    password = request.form.get('SECRET_PASSWORD')
+    if password != SECRET_PASSWORD:
+        raise BadRequest
+
+    # otherwise, run ask on all enabled users
+    statuses = {}
+    for user in User.query.filter_by(enabled=True).all():
+        try:
+            user.ask()
+            statuses[user.id] = True
+        except Exception:
+            statuses[user.id] = False
+
+    # return status on whether everything was successful
+    return(jsonify(statuses))
