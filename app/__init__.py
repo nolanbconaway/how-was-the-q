@@ -22,8 +22,6 @@ if os.path.exists('.env'):
     dotenv.load_dotenv(dotenv_path='.env')
 elif os.path.exists('../.env'):
     dotenv.load_dotenv(dotenv_path='../.env')
-else:
-    raise FileNotFoundError('No .env!')
 
 # tokens
 SLACK_BOT_OAUTH_ACCESS_TOKEN = os.getenv('SLACK_BOT_OAUTH_ACCESS_TOKEN')
