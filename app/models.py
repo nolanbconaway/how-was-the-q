@@ -38,6 +38,18 @@ class User(db.Model):
         """Get a user from their slack_id."""
         return cls.query.filter_by(slack_id=slack_id).first()
 
+    @classmethod
+    def ask_all(cls):
+        """Ask all enabled users."""
+        statuses = {}
+        for user in cls.query.filter_by(enabled=True).all():
+            try:
+                user.ask()
+                statuses[user.id] = True
+            except Exception:
+                statuses[user.id] = False
+        return statuses
+
     def message(self, text=None, **kwargs):
         """Quick wrapper to send a slack message to the user."""
         return slack_client.api_call(

@@ -15,8 +15,15 @@ from werkzeug.exceptions import BadRequest
 
 # flask extensions
 from flask_sqlalchemy import SQLAlchemy
-from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
+
+# load dotenv
+import dotenv
+if os.path.exists('.env'):
+    dotenv.load_dotenv(dotenv_path='.env')
+elif os.path.exists('../.env'):
+    dotenv.load_dotenv(dotenv_path='../.env')
+else:
+    raise FileNotFoundError('No .env!')
 
 # tokens
 SLACK_BOT_OAUTH_ACCESS_TOKEN = os.getenv('SLACK_BOT_OAUTH_ACCESS_TOKEN')
@@ -31,7 +38,6 @@ slack_client = SlackClient(SLACK_BOT_OAUTH_ACCESS_TOKEN)
 app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
-limiter = Limiter(app, key_func=get_remote_address)
 
 # within app imports
 from app.models import Rating, User
@@ -152,25 +158,3 @@ def interact():
 
     # otherwise do nothing
     return('OK')
-
-
-@limiter.limit("2 per minute")
-@app.route('/ask-all', methods=['POST'])
-def ask_all():
-    """Send asks to all enabled users if form data matches a secret."""
-    # get POST form data, validate
-    password = request.form.get('SECRET_PASSWORD')
-    if password != SECRET_PASSWORD:
-        raise BadRequest
-
-    # otherwise, run ask on all enabled users
-    statuses = {}
-    for user in User.query.filter_by(enabled=True).all():
-        try:
-            user.ask()
-            statuses[user.id] = True
-        except Exception:
-            statuses[user.id] = False
-
-    # return status on whether everything was successful
-    return(jsonify(statuses))

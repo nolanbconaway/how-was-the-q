@@ -33,6 +33,8 @@ day the bot asks me how my train ride was, and that's my training data.
 - [x] Schedule asks.
 - [ ] Fix messages from repeat-sending? IDK whats happening here.
 - [ ] Backup system.
+- [x] Move scheduled ask from an endpoint to an in-app script only.
 - [ ] Message handlers should be slash commands like `/q ask`.
 - [ ] New handlers: Get data as csv, help.
 - [ ] Constraints on time and number of ratings per day.
+- [ ] Add cancel button to ask UI.
