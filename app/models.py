@@ -1,6 +1,18 @@
 """Database models."""
 import datetime
+import os
+import json
+import requests
+
+# gtfs utils
+from google.transit import gtfs_realtime_pb2
+from protobuf_to_dict import protobuf_to_dict
+
+# within app imports
 from app import db, slack_client
+
+# get the MTA key
+MTA_API_KEY = os.getenv('MTA_API_KEY')
 
 
 class User(db.Model):
@@ -111,3 +123,37 @@ class Rating(db.Model):
     )
     rating = db.Column(db.String(50), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+
+
+class Snapshot(db.Model):
+    """Database model for a MTA status snapshots."""
+
+    __tablename__ = 'mta'
+
+    id = db.Column(db.Integer, primary_key=True)
+    snapshot_dttm = db.Column(
+        db.DateTime,
+        nullable=False,
+        default=datetime.datetime.utcnow
+    )
+    feed_id = db.Column(db.Integer, nullable=False)
+    json_data = db.Column(db.String(65535), nullable=True)
+
+    def __init__(self, feed_id, data, data_is_json=True):
+        self.feed_id = feed_id
+        self.json_data = data if data_is_json else json.dumps(data)
+
+    @staticmethod
+    def capture(feed_id):
+        """Get GTFS data from MTS for a single feed."""
+
+        # get request
+        res = requests.get(
+            'http://datamine.mta.info/mta_esi.php',
+            params=dict(key=MTA_API_KEY, feed_id=feed_id)
+        )
+
+        # format content as a dict, return
+        feed = gtfs_realtime_pb2.FeedMessage()
+        feed.ParseFromString(res.content)
+        return protobuf_to_dict(feed)
