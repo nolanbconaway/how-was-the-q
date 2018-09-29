@@ -1,7 +1,7 @@
 """Ask all users."""
 
 import datetime
-import json
+import sys
 from app.models import User
 
 # don't proceed if a weekend
@@ -10,4 +10,5 @@ if datetime.datetime.today().weekday() > 4:
 
 # do it
 statuses = User.ask_all()
-print(json.dumps(statuses))
+for k, v in statuses.items():
+    print(k, v)
