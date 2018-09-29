@@ -20,12 +20,16 @@ information that is too old to be of any use.
 ## What I am doing
 
 I am going to use machine learning to forecast delays on the Q. The MTA offers
-free access to historical and real-time data. I only need to come up with
-labelled training data to learn a model which predicts whether the train in
-`n+10` minutes will be delayed.
+free access to real-time data. I only need to come up with labelled training
+data to learn a model which predicts whether my morning train will be delayed.
 
 This repo specifies an API which interacts with Slack through a bot user. Every
-day the bot asks me how my train ride was, and that's my training data.
+day the bot asks me how my train ride was, and that's my training labels.
+
+A scheduled script captures the MTA realtime GTFS data through their API. I set
+it up to run every day right before I leave for work. With some time, I'll have
+enough training data to predict my morning train's delays from the state of the
+MTA per its API data.
 
 
 ## TODO
@@ -35,6 +39,5 @@ day the bot asks me how my train ride was, and that's my training data.
 - [ ] Backup system.
 - [x] Move scheduled ask from an endpoint to an in-app script only.
 - [ ] Message handlers should be slash commands like `/q ask`.
-- [ ] New handlers: Get data as csv, help.
 - [ ] Constraints on time and number of ratings per day.
 - [ ] Add cancel button to ask UI.

@@ -128,7 +128,7 @@ class Rating(db.Model):
 class Snapshot(db.Model):
     """Database model for a MTA status snapshots."""
 
-    __tablename__ = 'mta'
+    __tablename__ = 'mta_snapshots'
 
     id = db.Column(db.Integer, primary_key=True)
     snapshot_dttm = db.Column(
