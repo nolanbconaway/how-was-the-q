@@ -11,6 +11,7 @@ from slackclient import SlackClient
 from flask import Flask
 from flask import jsonify
 from flask import request
+from flask import render_template
 from werkzeug.exceptions import BadRequest
 
 # flask extensions
@@ -156,3 +157,11 @@ def interact():
 
     # otherwise do nothing
     return('OK')
+
+
+@app.route('/', methods=['GET'])
+def webui():
+    return render_template(
+        'index.html',
+        ratings=Rating.query.order_by(-Rating.rating_dttm).all()
+    )

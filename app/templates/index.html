@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>How was Nolan's Q train ride?</title>
+  </head>
+  <body>
+    <h1>
+      How was Nolan's Q train ride?
+    </h1>
+
+    <p>
+      I take the Q train most days at about 8AM.
+      I ride it from Parkside ave in Brooklyn to 34th Street in Manhattan.
+    </p>
+
+    <p>
+      I built a slack app to ask me how my ride was every day. This page
+      contains my responses to those prompts. One day I will built a machine
+      learning algorithm to predict my ride quality in advance, so that I might
+      use another line if a bad ride is forecasted.
+    </p>
+
+    <p>
+      The ratings are entirely subjective. "bad" ratings generally involve
+      delays so bad that I have to switch lines. "ok" ratings are a baseline,
+      no significant delays but the train might be crammed and/or we might
+      wait at Dekalb ave or on the Manhattan bridge (that's where the
+      bottleneck tends to be). "good" ratings are any ride without any
+      noticable delays <i>and</i> I feel like I have enough space
+      to be a human being.
+    </p>
+    <center>
+    <table>
+      <tr>
+        <th>Date</th>
+        <th>Rating</th>
+      </tr>
+      {% for rating in ratings %}
+      <tr class='rating {{rating.rating}}'>
+          <td>{{rating.rating_dttm.date().strftime('%A, %b %d %Y')}}</td>
+          <td>{{rating.rating}}</td>
+      </tr>
+      {% endfor %}
+    </table>
+    </center>
+  </body>
+
+  <style>
+    td, th {
+      text-align: left;
+      width: 300px;
+    }
+    tr.rating.good {
+      background-color: green
+    }
+    tr.rating.ok {
+      background-color: yellow
+    }
+    tr.rating.bad {
+      background-color: red
+    }
+  </style>
+</html>
