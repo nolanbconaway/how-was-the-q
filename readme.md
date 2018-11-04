@@ -36,8 +36,8 @@ MTA per its API data.
 
 - [x] Schedule asks.
 - [ ] Fix messages from repeat-sending? IDK whats happening here.
-- [ ] Backup system.
+- [x] Backup system.
 - [x] Move scheduled ask from an endpoint to an in-app script only.
 - [ ] Message handlers should be slash commands like `/q ask`.
-- [ ] Constraints on time and number of ratings per day.
 - [ ] Add cancel button to ask UI.
+- [ ] Add context to the bot response for the question.
