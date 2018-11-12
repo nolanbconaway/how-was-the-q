@@ -5,8 +5,8 @@ import time
 from app.models import Snapshot, db
 
 # # don't proceed if a weekend
-# if datetime.datetime.today().weekday() > 4:
-#     sys.exit()
+if datetime.datetime.today().weekday() > 4:
+    sys.exit()
 
 # list of feed ids to check
 feed_ids = [1, 11, 16, 2, 21, 26, 31, 36, 51]
