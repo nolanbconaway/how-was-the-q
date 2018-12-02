@@ -14,15 +14,15 @@ feed_ids = [1, 11, 16, 2, 21, 26, 31, 36, 51]
 for feed_id in feed_ids:
 
     # try a handul of times to get the data
-    for i in range(10):
+    for i in range(20):
         try:
             data = Snapshot.capture(feed_id)
             time.sleep(5)
             break
 
-        except Exception:
+        except Exception as e:
             # empty data if it didn't work
-            data = {}
+            data = {'_EXCEPTION': str(e)}
 
     # add it to the database
     snapshot = Snapshot(feed_id, data, data_is_json=False)
