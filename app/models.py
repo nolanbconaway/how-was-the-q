@@ -1,10 +1,12 @@
 """Database models."""
 import datetime
+import time
 import os
 import json
 import requests
 
 # gtfs utils
+import google
 from google.transit import gtfs_realtime_pb2
 from protobuf_to_dict import protobuf_to_dict
 
@@ -125,6 +127,10 @@ class Rating(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
 
+class GTFSWasEmptyError(Exception):
+    """Quick exception for me."""
+    pass
+
 class Snapshot(db.Model):
     """Database model for a MTA status snapshots."""
 
@@ -144,16 +150,27 @@ class Snapshot(db.Model):
         self.json_data = data if data_is_json else json.dumps(data)
 
     @staticmethod
-    def capture(feed_id):
+    def capture(feed_id, retries=100, timeout=1):
         """Get GTFS data from MTS for a single feed."""
+        def get():
+            res = requests.get(
+                'http://datamine.mta.info/mta_esi.php',
+                params=dict(key=MTA_API_KEY, feed_id=feed_id)
+            )
+            feed = gtfs_realtime_pb2.FeedMessage()
+            feed.ParseFromString(res.content)
+            feed_dict = protobuf_to_dict(feed)
+            if not feed_dict:
+                raise GTFSWasEmptyError
+            return feed_dict
 
-        # get request
-        res = requests.get(
-            'http://datamine.mta.info/mta_esi.php',
-            params=dict(key=MTA_API_KEY, feed_id=feed_id)
-        )
+        for retry in range(retries):
+            try:
+                r = get()
+                break
+            except (RuntimeWarning,
+                    GTFSWasEmptyError,
+                    google.protobuf.message.DecodeError):
+                time.sleep(1)
 
-        # format content as a dict, return
-        feed = gtfs_realtime_pb2.FeedMessage()
-        feed.ParseFromString(res.content)
-        return protobuf_to_dict(feed)
+        return r
