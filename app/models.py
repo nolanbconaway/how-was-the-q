@@ -162,6 +162,8 @@ class Snapshot(db.Model):
             feed_dict = protobuf_to_dict(feed)
             if not feed_dict:
                 raise GTFSWasEmptyError
+            if 'entity' not in feed_dict:
+                raise KeyError
             return feed_dict
 
         for retry in range(retries):
@@ -169,6 +171,7 @@ class Snapshot(db.Model):
                 r = get()
                 break
             except (RuntimeWarning,
+                    KeyError,
                     GTFSWasEmptyError,
                     google.protobuf.message.DecodeError):
                 time.sleep(1)
