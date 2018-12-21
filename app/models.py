@@ -174,6 +174,9 @@ class Snapshot(db.Model):
                     KeyError,
                     GTFSWasEmptyError,
                     google.protobuf.message.DecodeError):
-                time.sleep(1)
+                if retry == (retries - 1):
+                    raise
+                else:
+                    time.sleep(1)
 
         return r
