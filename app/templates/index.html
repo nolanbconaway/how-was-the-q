@@ -1,43 +1,47 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
+    <!-- Latest compiled and minified CSS -->
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
     <meta charset="utf-8">
     <title>How was Nolan's Q train ride?</title>
+
   </head>
   <body>
     <h1>
       How was Nolan's Q train ride?
     </h1>
-
+    <div id=info>
     <p>
-      My wife (Yelena) and I take the Q train most days at about 8AM.
-      We ride it from Parkside ave in Brooklyn to lower- and midtown Manhattan.
+      I ride the the Q train most days at about 8AM.
+      I ride it from Parkside ave in Brooklyn to work in midtown Manhattan.
     </p>
 
     <p>
       I built a slack app to ask me how the Q ride was every day. This page
-      contains my responses to those prompts. When I work from home my wife
-      tells me how the train was. One day I will built a machine learning
-      algorithm to predict my ride quality in advance, so that we might use
-      another line if a bad ride is forecasted.
+      contains my responses to those prompts. One day I will built a model to
+      predict my ride quality in advance, so that I might use another line if
+      a bad ride is forecasted.
     </p>
 
     <p>
       The ratings are entirely subjective. "bad" ratings generally involve
-      delays so bad that we have to switch lines. "ok" ratings are a baseline,
+      delays so bad that I have to switch lines. "ok" ratings are a baseline,
       no significant delays but the train might be crammed and/or we might
       wait a few minutes here or there. "good" ratings are any ride without any
-      noticable delays <i>and</i> we have a reasonable amount of
-      space, or, <i>gasp</i>, one of us gets a seat.
+      noticable delays <i>and</i> there is reasonable amount of
+      space, or, <i>gasp</i>, an open seat.
     </p>
+    </div>
     <center>
-    <table>
+    <table class="table">
       <tr>
         <th>Date</th>
         <th>Rating</th>
       </tr>
       {% for rating in ratings %}
-      <tr class='rating {{rating.rating}}'>
+      <tr>
           <td>{{rating.rating_dttm.date().strftime('%A, %b %d %Y')}}</td>
           <td>{{rating.rating}}</td>
       </tr>
@@ -47,18 +51,16 @@
   </body>
 
   <style>
+    body {
+      width: 600px;
+      margin: 10px;
+    }
+    #info {
+      padding-bottom: 10px
+    }
     td, th {
       text-align: left;
       width: 300px;
-    }
-    tr.rating.good {
-      background-color: green
-    }
-    tr.rating.ok {
-      background-color: yellow
-    }
-    tr.rating.bad {
-      background-color: red
     }
   </style>
 </html>
