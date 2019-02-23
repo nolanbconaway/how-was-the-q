@@ -13,7 +13,7 @@ WHERE rating_id IS NULL
 
 # delete em
 for (snapshot_id,) in db.session.execute(sql):
-    snapshot = Snapshot.query.get(id)
+    snapshot = Snapshot.query.get(snapshot_id)
     db.session.delete(snapshot)
 
 # commit
