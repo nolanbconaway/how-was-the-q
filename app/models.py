@@ -170,6 +170,6 @@ class Snapshot(db.Model):
                 if retry == (retries - 1):
                     raise
                 else:
-                    time.sleep(1)
+                    time.sleep(timeout)
 
         return r

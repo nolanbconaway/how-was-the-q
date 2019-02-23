@@ -3,10 +3,6 @@
 -- I am a big dummy and I do not associate a rating with a particular snapshot
 -- so any snapshots <= 18 hours before the rating are good enough.
 --
--- In basically all cases it should just be the one, unless something weird
--- happened to me. I have no idea how multiple matches would handle in the
--- groupby-case statements.
---
 -- Have to do this right / left join union because the maniacs at mysql don't have an
 -- outer join.
 -- https://dev.mysql.com/doc/refman/8.0/en/outer-join-simplification.html
@@ -27,6 +23,11 @@ AND TIMESTAMPDIFF(HOUR, s.snapshot_dttm, r.rating_dttm) >= 0
 -- Create a tidy view of the ratings mapped to their snapshots.
 --
 -- So that each rating is a row and each snapshot is a column.
+--
+--
+-- Ratings and snapshots could be many to many, but almost always should be one rating
+-- to many snapshots (due to how the data is acquired). I have no idea how this would
+-- break if it were many to many. But it would spit out some very wrong data.
 CREATE VIEW daily AS
 SELECT
   cast(r.rating_dttm as date) AS dt
