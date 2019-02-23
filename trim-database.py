@@ -16,7 +16,7 @@ WHERE rating_id IS NULL
 seconds_in_day = 86400
 
 # delete em
-for (snapshot_id,) in db.session.execute(sql):
+for (snapshot_id,) in db.session.execute(sql).fetchall():
     snapshot = Snapshot.query.get(snapshot_id)
     age_seconds = (datetime.datetime.now() - snapshot.snapshot_dttm).total_seconds()
 
