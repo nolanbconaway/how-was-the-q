@@ -18,7 +18,7 @@ seconds_in_day = 86400
 # delete em
 for (snapshot_id,) in db.session.execute(sql):
     snapshot = Snapshot.query.get(snapshot_id)
-    age_seconds = datetime.datetime.now() - snapshot.snapshot_dttm
+    age_seconds = (datetime.datetime.now() - snapshot.snapshot_dttm).total_seconds()
 
     # only delete after 24h. The view only joins if the rating is within 18 but i think
     # there might be a timezone bug so lets keep em around for a day.
