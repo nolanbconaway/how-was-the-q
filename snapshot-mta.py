@@ -1,3 +1,5 @@
+"""Query the MTA to obtain a status on each feed."""
+
 import sys
 import json
 import datetime
@@ -18,7 +20,7 @@ for feed_id in feed_ids:
         data = Snapshot.capture(feed_id)
     except Exception as e:
         # empty data if it didn't work
-        data = {'_EXCEPTION': str(e)}
+        data = {"_EXCEPTION": str(e)}
 
     # add it to the database
     snapshot = Snapshot(feed_id, data, data_is_json=False)
@@ -26,4 +28,4 @@ for feed_id in feed_ids:
     db.session.commit()
 
     # log
-    print('SNAPSHOT: %d' % feed_id)
+    print("SNAPSHOT: %d" % feed_id)
