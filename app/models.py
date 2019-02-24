@@ -30,6 +30,7 @@ class User(db.Model):
     )
     enabled = db.Column(db.Boolean, default=True, nullable=False)
     ratings = db.relationship("Rating", backref="user")
+    is_nolan = db.Column(db.Boolean, default=False, nullable=False)
 
     @classmethod
     def get_or_create(cls, slack_id, slack_channel_id):
