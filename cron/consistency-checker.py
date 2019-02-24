@@ -3,8 +3,15 @@
 It should be ONE rating to MANY snapshots.
 """
 
-from app.models import db, User
 import sys
+import os
+
+# hack to get parent dir on the path
+parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(parent_dir)
+
+from app.models import db, User
+
 
 # Each rating should not have multiple snapshots for the same feed.
 sql = """

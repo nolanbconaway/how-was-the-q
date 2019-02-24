@@ -3,8 +3,15 @@
 Basically to save space. I'm not _made of money_.
 """
 
-from app.models import db, Snapshot
 import datetime
+import sys
+import os
+
+# hack to get parent dir on the path
+parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(parent_dir)
+
+from app.models import db, Snapshot
 
 # query a view of ratings outer joined to snapshots
 sql = "SELECT snapshot_id FROM rating_snapshot_map WHERE rating_id IS NULL"
