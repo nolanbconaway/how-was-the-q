@@ -1,28 +1,40 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-  <head>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-80719882-3"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
 
-      gtag('config', 'UA-80719882-3');
-    </script>
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-80719882-3"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
 
-    <!-- Latest compiled and minified CSS -->
-     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    gtag('config', 'UA-80719882-3');
+  </script>
 
-    <meta charset="utf-8">
-    <title>How was Nolan's Q train ride?</title>
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
-  </head>
-  <body>
-    <h1>
-      How was Nolan's Q train ride?
-    </h1>
-    <div id=info>
+  <meta charset="utf-8">
+  <title>How was Nolan's Q train ride?</title>
+
+</head>
+
+<body>
+  <div class='notice'>
+    <p>
+      As of late summer, Casper is moving from its offices in Union Square to FiDi.
+      The Q train is great but now it is time for me to move on to the 5...
+    </p>
+    <p>
+      This dataset is no longer being updated. I would be happy to provide labeled
+      Q train rides along with snapshots from the MTA realtime API to anyone who asks!
+    </p>
+  </div>
+  <h1>
+    How was Nolan's Q train ride?
+  </h1>
+  <div id=info>
     <p>
       I ride the the Q train most days at about 8AM.
       I ride it from Parkside ave in Brooklyn to work in midtown Manhattan.
@@ -43,8 +55,8 @@
       noticable delays <i>and</i> there is reasonable amount of
       space, or, <i>gasp</i>, an open seat.
     </p>
-    </div>
-    <center>
+  </div>
+  <center>
     <table class="table">
       <tr>
         <th>Date</th>
@@ -52,25 +64,36 @@
       </tr>
       {% for rating in ratings %}
       <tr>
-          <td>{{rating.rating_dttm.date().strftime('%A, %b %d %Y')}}</td>
-          <td>{{rating.rating}}</td>
+        <td>{{rating.rating_dttm.date().strftime('%A, %b %d %Y')}}</td>
+        <td>{{rating.rating}}</td>
       </tr>
       {% endfor %}
     </table>
-    </center>
-  </body>
+  </center>
+</body>
 
-  <style>
-    body {
-      width: 600px;
-      margin: 10px;
-    }
-    #info {
-      padding-bottom: 10px
-    }
-    td, th {
-      text-align: left;
-      width: 300px;
-    }
-  </style>
+<style>
+  body {
+    width: 600px;
+    margin: 10px;
+  }
+
+  #info {
+    padding-bottom: 10px
+  }
+
+  td,
+  th {
+    text-align: left;
+    width: 300px;
+  }
+
+  .notice {
+    background-color: khaki;
+    padding: 5px;
+    border: 2px dashed darkkhaki;
+  }
+
+</style>
+
 </html>
